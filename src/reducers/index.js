@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import KontakReducer from "./kontak/index";
+import ContactReducer from "./kontak/index";
 
 export default combineReducers({
-  KontakReducer,
+  ContactReducer,
 });
