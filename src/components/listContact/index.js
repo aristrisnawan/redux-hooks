@@ -1,16 +1,32 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getListContact } from "../../actions/contactAction";
+import {
+  deleteContact,
+  getListContact,
+  detailContact,
+} from "../../actions/contactAction";
 
 function ListContact() {
-  const { getListContactResult, getListContactLoading, getLiatContactError } =
-    useSelector((state) => state.ContactReducer);
+  const {
+    getListContactResult,
+    getListContactLoading,
+    getLiatContactError,
+    deleteContactResult,
+  } = useSelector((state) => state.ContactReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
     //panggil action getlist contact
     dispatch(getListContact());
   }, [dispatch]);
+
+  //auto reload
+  useEffect(() => {
+    if (deleteContactResult) {
+      dispatch(getListContact());
+    }
+  }, [deleteContactResult, dispatch]);
+
   return (
     <div>
       <h1>List Contact</h1>
@@ -18,16 +34,26 @@ function ListContact() {
         ? getListContactResult.map((items) => {
             return (
               <div key={items.id}>
-                <p>Nama : {items.nama}</p>
-                <p>Nomor Hp : {items.nohp}</p>
+                <p>
+                  {items.nama} - {items.nohp}{" "}
+                  <button onClick={() => dispatch(deleteContact(items.id))}>
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => dispatch(detailContact(items))}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Edit
+                  </button>
+                </p>
               </div>
             );
           })
         : getListContactLoading
         ? "Loading data"
         : getLiatContactError
-        ? "Data Error"
-        : ""}
+        ? "Data Error atau Server mati"
+        : "Data Kosong"}
     </div>
   );
 }
